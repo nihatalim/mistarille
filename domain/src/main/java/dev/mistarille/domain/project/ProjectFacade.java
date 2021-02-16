@@ -3,11 +3,9 @@ package dev.mistarille.domain.project;
 import dev.mistarille.domain.exception.ExceptionKey;
 import dev.mistarille.domain.exception.ModelCreationException;
 import dev.mistarille.domain.project.model.Project;
-import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Component
 public class ProjectFacade {
 
     private final ProjectPersistencePort projectPersistencePort;
