@@ -28,4 +28,9 @@ public class ProjectPersistenceAdapter implements ProjectPersistencePort {
         ProjectEntity savedEntity = projectRepository.save(projectEntity);
         return projectConverter.convertToProject(savedEntity);
     }
+
+    @Override
+    public String getProjectIdByAccessToken(String accessToken) {
+        return null;
+    }
 }
