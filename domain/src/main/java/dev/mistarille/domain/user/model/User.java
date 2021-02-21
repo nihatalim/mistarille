@@ -6,7 +6,9 @@ public class User {
     private String password;
     private String projectId;
 
-    public User() { }
+    public User() {
+
+    }
 
     public String getUserId() {
         return userId;

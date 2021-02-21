@@ -1,7 +1,8 @@
-package dev.mistarille.domain.exception;
+package dev.mistarille.domain.common.exception;
 
 public enum ExceptionKey {
-    PROJECT_NAME_IS_NOT_UNIQUE("");
+    PROPERTY_IS_EMPTY(""),
+    PROPERTY_IS_NULL("");
 
     private String messageKey;
 
