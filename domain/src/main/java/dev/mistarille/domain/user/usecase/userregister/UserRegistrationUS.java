@@ -1,4 +1,4 @@
-package dev.mistarille.domain.user.usecase;
+package dev.mistarille.domain.user.usecase.userregister;
 
 import dev.mistarille.domain.common.usecase.FunctionUseCase;
 import dev.mistarille.domain.user.model.User;
@@ -14,7 +14,7 @@ public class UserRegistrationUS extends FunctionUseCase<User, User> {
 
     @Override
     protected User run(User user) {
-        return null;
+        return createUserPort.createUser(user);
     }
 
     @Override

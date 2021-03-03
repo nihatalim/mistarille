@@ -41,4 +41,15 @@ public class User {
     public void setProjectId(String projectId) {
         this.projectId = projectId;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("userId='").append(userId).append('\'');
+        sb.append(", userName='").append(userName).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", projectId='").append(projectId).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }
