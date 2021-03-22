@@ -4,7 +4,8 @@ public class User {
     private String userId;
     private String userName;
     private String password;
-    private String projectId;
+    private String accessToken;
+    private boolean isActive;
 
     public User() {
 
@@ -34,12 +35,20 @@ public class User {
         this.password = password;
     }
 
-    public String getProjectId() {
-        return projectId;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     @Override
@@ -48,7 +57,8 @@ public class User {
         sb.append("userId='").append(userId).append('\'');
         sb.append(", userName='").append(userName).append('\'');
         sb.append(", password='").append(password).append('\'');
-        sb.append(", projectId='").append(projectId).append('\'');
+        sb.append(", accessToken='").append(accessToken).append('\'');
+        sb.append(", isActive=").append(isActive);
         sb.append('}');
         return sb.toString();
     }
