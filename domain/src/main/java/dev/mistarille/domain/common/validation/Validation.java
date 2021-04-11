@@ -1,28 +1,60 @@
 package dev.mistarille.domain.common.validation;
 
-import dev.mistarille.domain.common.exception.ExceptionEntryPoint;
+import lombok.AllArgsConstructor;
 
-import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.function.Function;
 
-public class Validation {
-    protected void checkValueIsNotEmpty(String value) {
-        checkValueIsNotNull(value);
+@AllArgsConstructor
+public class Validation<T> {
+    private T item = null;
+    private final List<IValidator<T>> queue;
+    private final Map<IValidator<T>, Function<T, RuntimeException>> exceptions;
 
-        if (isEmpty.test(value)) {
-            ExceptionEntryPoint.throwPropertyIsEmptyException();
-        }
+    public Validation() {
+        this.queue = new ArrayList<>();
+        this.exceptions = new HashMap<>();
     }
 
-    protected void checkValueIsNotNull(String value) {
-        if (Objects.isNull(value)) {
-            ExceptionEntryPoint.throwPropertyIsNullException();
-        }
+    public Validation(T item) {
+        this();
+        this.item = item;
     }
 
-    protected Predicate<String> isEmpty = (value) -> value.trim().equals("");
+    public static <T> Validation<T> item(T item) {
+        return new Validation<>(item);
+    }
 
-    public void elseThrow(RuntimeException e) throws RuntimeException {
-        throw e;
+    public Validation<T> then(IValidator<T> validator) {
+        this.queue.add(validator);
+        return this;
+    }
+
+    public Validation<T> error(Function<T, RuntimeException> function) {
+        int queueSize = this.queue.size();
+
+        if (queueSize > 0) {
+            this.exceptions.put(this.queue.get(queueSize - 1), function);
+        }
+
+        return this;
+    }
+
+    public boolean apply() {
+        return this.queue
+            .stream()
+            .allMatch(validator -> {
+                boolean validate = validator.validate(item);
+
+                if (!validate) {
+                    Function<T, RuntimeException> function = this.exceptions.get(validator);
+
+                    if (Objects.nonNull(function)) {
+                        throw function.apply(item);
+                    }
+                }
+
+                return validate;
+            });
     }
 }
