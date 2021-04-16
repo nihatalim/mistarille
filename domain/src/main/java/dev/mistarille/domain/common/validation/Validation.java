@@ -1,5 +1,6 @@
 package dev.mistarille.domain.common.validation;
 
+import dev.mistarille.domain.common.validation.validator.NullValidator;
 import lombok.AllArgsConstructor;
 
 import java.util.*;
@@ -8,15 +9,17 @@ import java.util.function.Function;
 @AllArgsConstructor
 public class Validation<T> {
     private T item = null;
+
     private final List<IValidator<T>> queue;
+
     private final Map<IValidator<T>, Function<T, RuntimeException>> exceptions;
 
-    public Validation() {
+    private Validation() {
         this.queue = new ArrayList<>();
         this.exceptions = new HashMap<>();
     }
 
-    public Validation(T item) {
+    private Validation(T item) {
         this();
         this.item = item;
     }
@@ -25,16 +28,20 @@ public class Validation<T> {
         return new Validation<>(item);
     }
 
+    public static <T> Validation<T> itemNullCheck(T item) {
+        final NullValidator<T> nullValidator = new NullValidator<>();
+        final Validation<T> validator = new Validation<>(item);
+        return validator.then(nullValidator);
+    }
+
     public Validation<T> then(IValidator<T> validator) {
         this.queue.add(validator);
         return this;
     }
 
     public Validation<T> error(Function<T, RuntimeException> function) {
-        int queueSize = this.queue.size();
-
-        if (queueSize > 0) {
-            this.exceptions.put(this.queue.get(queueSize - 1), function);
+        if (!isQueueEmpty()) {
+            this.exceptions.put(getLastItem(), function);
         }
 
         return this;
@@ -56,5 +63,13 @@ public class Validation<T> {
 
                 return validate;
             });
+    }
+
+    private IValidator<T> getLastItem(){
+        return this.queue.get(this.queue.size() - 1);
+    }
+
+    private boolean isQueueEmpty(){
+        return this.queue.size() == 0;
     }
 }

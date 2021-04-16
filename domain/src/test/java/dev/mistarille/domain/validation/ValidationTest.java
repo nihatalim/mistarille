@@ -1,5 +1,6 @@
 package dev.mistarille.domain.validation;
 
+import dev.mistarille.domain.common.validation.IValidator;
 import dev.mistarille.domain.common.validation.Validation;
 import dev.mistarille.domain.common.validation.ValidationCombiner;
 import dev.mistarille.domain.validation.exception.PersonCannotBeNullException;
@@ -8,10 +9,47 @@ import dev.mistarille.domain.validation.model.Person;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidationTest {
+
+    static class PersonValidator implements IValidator<Person>{
+        @Override
+        public boolean validate(Person person) {
+            return Validation.item(person)
+                .then(item -> item.getSurname().trim().length() > 0)
+                .error(item -> new PersonNameCannotBeNullException("Person surname cannot be empty!"))
+                .apply();
+        }
+    }
+
+    @Test
+    public void asd(){
+        Person person = new Person("N.hat", ""); //Person.getRandomPerson();
+        Stream<Person> personStream = IntStream.range(0, 10)
+                                        .mapToObj(i -> Person.getRandomPerson());
+
+        PersonValidator personValidator = new PersonValidator();
+        personValidator.validate(person);
+
+        boolean apply = ValidationCombiner.combine(
+            Validation.item(person)
+                .then(personValidator),
+
+            Validation.item(person.getSurname())
+                .then(item -> item.length() > 0)
+                .error(item -> new RuntimeException("asdsad")),
+
+            Validation.item(personStream)
+                .then(str -> str.noneMatch(Objects::nonNull))
+                .error(str -> new RuntimeException("Stream object non null "))
+        )
+            .error(() -> new RuntimeException("Combination throwws error "))
+            .apply();
+    }
 
     @Test
     public void validation_combiner_result_true_for_random_person() {
