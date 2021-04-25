@@ -1,10 +1,14 @@
 package dev.mistarille.domain.user.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.Date;
+
 @Data
+@NoArgsConstructor
 public class User {
     private String id;
     private String name;

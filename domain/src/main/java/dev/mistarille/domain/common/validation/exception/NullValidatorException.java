@@ -1,4 +1,4 @@
-package dev.mistarille.domain.common.exception;
+package dev.mistarille.domain.common.validation.exception;
 
 import java.lang.reflect.Field;
 
